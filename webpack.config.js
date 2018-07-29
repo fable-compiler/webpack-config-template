@@ -88,6 +88,9 @@ module.exports = {
         : commonPlugins.concat([
             new webpack.HotModuleReplacementPlugin(),
         ]),
+    resolve: {
+        symlinks: false
+    },
     // Configuration for webpack-dev-server
     devServer: {
         publicPath: "/",
