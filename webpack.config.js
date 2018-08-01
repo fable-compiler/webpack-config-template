@@ -11,14 +11,16 @@ var CONFIG = {
     outputDir: "./deploy",
     assetsDir: "./public",
     devServerPort: 8080,
+    // When using webpack-dev-server, you may need to redirect some calls
+    // to a external API server. See https://webpack.js.org/configuration/dev-server/#devserver-proxy
     devServerProxy: undefined,
     // Use babel-preset-env to generate JS compatible with most-used browsers.
-    // More info at https://github.com/babel/babel/blob/master/packages/babel-preset-env/README.md
+    // More info at https://babeljs.io/docs/en/next/babel-preset-env.html
     babel: {
         presets: [
             ["env", {
                 "modules": false,
-                "useBuiltIns": "usage",
+                "useBuiltIns": true,
             }]
         ],
     }
@@ -33,7 +35,6 @@ var webpack = require("webpack");
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 var MiniCssExtractPlugin = require("mini-css-extract-plugin");
-var UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 // The HtmlWebpackPlugin allows us to use a template for the index.html page
 // and automatically injects <script> or <link> tags for generated bundles.
@@ -45,8 +46,17 @@ var commonPlugins = [
 ];
 
 module.exports = {
-    entry: CONFIG.fsharpEntry,
-    // NOTE we add a hash to the output file name in production
+    // In development, bundle styles together with the code so they can also
+    // trigger hot reloads. In production, put them in a separate CSS file.
+
+    // core-js is a polyfill. If you only need to support modern browsers, you can remove it.
+    entry: isProduction ? {
+        app: ["core-js", CONFIG.fsharpEntry, CONFIG.cssEntry]
+    } : {
+            app: ["core-js", CONFIG.fsharpEntry],
+            style: [CONFIG.cssEntry]
+        },
+    // Add a hash to the output file name in production
     // to prevent browser caching if code changes
     output: {
         path: path.join(__dirname, CONFIG.outputDir),
@@ -77,18 +87,12 @@ module.exports = {
         commonPlugins.concat([
             new MiniCssExtractPlugin({ filename: 'style.css' }),
             new CopyWebpackPlugin([{ from: CONFIG.assetsDir }]),
-            // Inlining is causing problems in minified code
-            // See https://github.com/mishoo/UglifyJS2/issues/2842#issuecomment-359527962
-            new UglifyJSPlugin({
-                uglifyOptions: {
-                    compress: { inline: false }
-                }
-            }),
         ])
         : commonPlugins.concat([
             new webpack.HotModuleReplacementPlugin(),
         ]),
     resolve: {
+        // See https://github.com/fable-compiler/Fable/issues/1490
         symlinks: false
     },
     // Configuration for webpack-dev-server
@@ -121,8 +125,9 @@ module.exports = {
             {
                 test: /\.(sass|scss|css)$/,
                 use: [
-                    isProduction ? MiniCssExtractPlugin.loader :
-                        'style-loader',
+                    isProduction
+                        ? MiniCssExtractPlugin.loader
+                        : 'style-loader',
                     'css-loader',
                     'sass-loader',
                 ],
