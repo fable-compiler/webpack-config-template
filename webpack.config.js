@@ -18,7 +18,10 @@ var CONFIG = {
     // More info at https://babeljs.io/docs/en/next/babel-preset-env.html
     babel: {
         presets: [
-            ["env", {
+            ["@babel/preset-env", {
+                "targets": {
+                    "browsers": ["last 2 versions"]
+                },
                 "modules": false,
                 "useBuiltIns": true,
             }]
@@ -49,11 +52,11 @@ module.exports = {
     // In development, bundle styles together with the code so they can also
     // trigger hot reloads. In production, put them in a separate CSS file.
 
-    // core-js is a polyfill. If you only need to support modern browsers, you can remove it.
+    // @babel/polyfill is a polyfill. If you only need to support modern browsers, you can remove it.
     entry: isProduction ? {
-        app: ["core-js", CONFIG.fsharpEntry, CONFIG.cssEntry]
+        app: ["@babel/polyfill", CONFIG.fsharpEntry, CONFIG.cssEntry]
     } : {
-            app: ["core-js", CONFIG.fsharpEntry],
+            app: ["@babel/polyfill", CONFIG.fsharpEntry],
             style: [CONFIG.cssEntry]
         },
     // Add a hash to the output file name in production
