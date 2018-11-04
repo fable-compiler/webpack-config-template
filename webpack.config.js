@@ -23,7 +23,7 @@ var CONFIG = {
                     "browsers": ["last 2 versions"]
                 },
                 "modules": false,
-                "useBuiltIns": true,
+                "useBuiltIns": "usage",
             }]
         ],
     }
@@ -52,7 +52,8 @@ module.exports = {
     // In development, bundle styles together with the code so they can also
     // trigger hot reloads. In production, put them in a separate CSS file.
 
-    // @babel/polyfill is a polyfill. If you only need to support modern browsers, you can remove it.
+    // @babel/polyfill adds code for compatibility with old browser.
+    // If you only need to support modern browsers, you can remove it.
     entry: isProduction ? {
         app: ["@babel/polyfill", CONFIG.fsharpEntry, CONFIG.cssEntry]
     } : {
