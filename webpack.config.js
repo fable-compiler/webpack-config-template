@@ -23,6 +23,8 @@ var CONFIG = {
                     "browsers": ["last 2 versions"]
                 },
                 "modules": false,
+                // This adds polyfills when needed. Requires core-js dependency.
+                // See https://babeljs.io/docs/en/babel-preset-env#usebuiltins
                 "useBuiltIns": "usage",
             }]
         ],
@@ -51,13 +53,10 @@ var commonPlugins = [
 module.exports = {
     // In development, bundle styles together with the code so they can also
     // trigger hot reloads. In production, put them in a separate CSS file.
-
-    // @babel/polyfill adds code for compatibility with old browser.
-    // If you only need to support modern browsers, you can remove it.
     entry: isProduction ? {
-        app: ["@babel/polyfill", CONFIG.fsharpEntry, CONFIG.cssEntry]
+        app: [CONFIG.fsharpEntry, CONFIG.cssEntry]
     } : {
-            app: ["@babel/polyfill", CONFIG.fsharpEntry],
+            app: [CONFIG.fsharpEntry],
             style: [CONFIG.cssEntry]
         },
     // Add a hash to the output file name in production
