@@ -1,10 +1,20 @@
 // Template for webpack.config.js in Fable projects
 // Find latest version in https://github.com/fable-compiler/webpack-config-template
 
-// In most cases, you'll only need to edit the CONFIG object
+// In most cases, you'll only need to edit the CONFIG object (after dependencies)
 // See below if you need better fine-tuning of Webpack options
 
+// Dependencies. Also required: core-js, fable-loader, fable-compiler, @babel/core,
+// @babel/preset-env, babel-loader, sass, sass-loader, css-loader, style-loader, file-loader
+var path = require("path");
+var webpack = require("webpack");
+var HtmlWebpackPlugin = require('html-webpack-plugin');
+var CopyWebpackPlugin = require('copy-webpack-plugin');
+var MiniCssExtractPlugin = require("mini-css-extract-plugin");
+
 var CONFIG = {
+    // The tags to include the generated JS and CSS will be automatically injected in the HTML template
+    // See https://github.com/jantimon/html-webpack-plugin
     indexHtmlTemplate: "./src/index.html",
     fsharpEntry: "./src/App.fsproj",
     cssEntry: "./src/style.sass",
@@ -35,18 +45,12 @@ var CONFIG = {
 var isProduction = !process.argv.find(v => v.indexOf('webpack-dev-server') !== -1);
 console.log("Bundling for " + (isProduction ? "production" : "development") + "...");
 
-var path = require("path");
-var webpack = require("webpack");
-var HtmlWebpackPlugin = require('html-webpack-plugin');
-var CopyWebpackPlugin = require('copy-webpack-plugin');
-var MiniCssExtractPlugin = require("mini-css-extract-plugin");
-
 // The HtmlWebpackPlugin allows us to use a template for the index.html page
 // and automatically injects <script> or <link> tags for generated bundles.
 var commonPlugins = [
     new HtmlWebpackPlugin({
         filename: 'index.html',
-        template: CONFIG.indexHtmlTemplate
+        template: resolve(CONFIG.indexHtmlTemplate)
     })
 ];
 
@@ -54,15 +58,15 @@ module.exports = {
     // In development, bundle styles together with the code so they can also
     // trigger hot reloads. In production, put them in a separate CSS file.
     entry: isProduction ? {
-        app: [CONFIG.fsharpEntry, CONFIG.cssEntry]
+        app: [resolve(CONFIG.fsharpEntry), resolve(CONFIG.cssEntry)]
     } : {
-            app: [CONFIG.fsharpEntry],
-            style: [CONFIG.cssEntry]
+            app: [resolve(CONFIG.fsharpEntry)],
+            style: [resolve(CONFIG.cssEntry)]
         },
     // Add a hash to the output file name in production
     // to prevent browser caching if code changes
     output: {
-        path: path.join(__dirname, CONFIG.outputDir),
+        path: resolve(CONFIG.outputDir),
         filename: isProduction ? '[name].[hash].js' : '[name].js'
     },
     mode: isProduction ? "production" : "development",
@@ -89,7 +93,7 @@ module.exports = {
     plugins: isProduction ?
         commonPlugins.concat([
             new MiniCssExtractPlugin({ filename: 'style.css' }),
-            new CopyWebpackPlugin([{ from: CONFIG.assetsDir }]),
+            new CopyWebpackPlugin([{ from: resolve(CONFIG.assetsDir) }]),
         ])
         : commonPlugins.concat([
             new webpack.HotModuleReplacementPlugin(),
@@ -101,7 +105,7 @@ module.exports = {
     // Configuration for webpack-dev-server
     devServer: {
         publicPath: "/",
-        contentBase: CONFIG.assetsDir,
+        contentBase: resolve(CONFIG.assetsDir),
         port: CONFIG.devServerPort,
         proxy: CONFIG.devServerProxy,
         hot: true,
@@ -137,7 +141,10 @@ module.exports = {
                         ? MiniCssExtractPlugin.loader
                         : 'style-loader',
                     'css-loader',
-                    'sass-loader',
+                    {
+                      loader: 'sass-loader',
+                      options: { implementation: require("sass") }
+                    }
                 ],
             },
             {
@@ -147,3 +154,7 @@ module.exports = {
         ]
     }
 };
+
+function resolve(filePath) {
+    return path.path.isAbsolute(filePath) ? filePath : path.join(__dirname, filePath);
+}
