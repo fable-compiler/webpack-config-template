@@ -29,9 +29,7 @@ var CONFIG = {
     babel: {
         presets: [
             ["@babel/preset-env", {
-                "targets": {
-                    "browsers": ["last 2 versions"]
-                },
+                "targets": "> 0.25%, not dead",
                 "modules": false,
                 // This adds polyfills when needed. Requires core-js dependency.
                 // See https://babeljs.io/docs/en/babel-preset-env#usebuiltins
