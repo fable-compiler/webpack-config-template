@@ -155,5 +155,5 @@ module.exports = {
 };
 
 function resolve(filePath) {
-    return path.path.isAbsolute(filePath) ? filePath : path.join(__dirname, filePath);
+    return path.isAbsolute(filePath) ? filePath : path.join(__dirname, filePath);
 }
