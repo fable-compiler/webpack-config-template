@@ -53,8 +53,10 @@ var commonPlugins = [
 ];
 
 module.exports = {
-    // In development, bundle styles together with the code so they can also
-    // trigger hot reloads. In production, put them in a separate CSS file.
+    // In development, split the JavaScript and CSS files in order to
+    // have a faster HMR support. In production bundle styles together
+    // with the code because the MiniCssExtractPlugin will extract the
+    // CSS in a separate files.
     entry: isProduction ? {
         app: [resolve(CONFIG.fsharpEntry), resolve(CONFIG.cssEntry)]
     } : {
