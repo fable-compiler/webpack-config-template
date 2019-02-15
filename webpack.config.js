@@ -56,10 +56,10 @@ module.exports = {
     // In development, bundle styles together with the code so they can also
     // trigger hot reloads. In production, put them in a separate CSS file.
     entry: isProduction ? {
-        app: [resolve(CONFIG.fsharpEntry), resolve(CONFIG.cssEntry)]
+        app: [resolve(CONFIG.fsharpEntry)],
+        style: [resolve(CONFIG.cssEntry)]        
     } : {
-            app: [resolve(CONFIG.fsharpEntry)],
-            style: [resolve(CONFIG.cssEntry)]
+        app: [resolve(CONFIG.fsharpEntry), resolve(CONFIG.cssEntry)]
         },
     // Add a hash to the output file name in production
     // to prevent browser caching if code changes
