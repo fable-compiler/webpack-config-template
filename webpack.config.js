@@ -29,11 +29,11 @@ var CONFIG = {
     babel: {
         presets: [
             ["@babel/preset-env", {
-                "targets": "> 0.25%, not dead",
-                "modules": false,
+                modules: false,
                 // This adds polyfills when needed. Requires core-js dependency.
                 // See https://babeljs.io/docs/en/babel-preset-env#usebuiltins
-                "useBuiltIns": "usage",
+                useBuiltIns: "usage",
+                corejs: 3
             }]
         ],
     }
