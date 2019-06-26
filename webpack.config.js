@@ -5,7 +5,7 @@
 // See below if you need better fine-tuning of Webpack options
 
 // Dependencies. Also required: core-js, fable-loader, fable-compiler, @babel/core,
-// @babel/preset-env, babel-loader, sass, sass-loader, css-loader, style-loader, file-loader
+// @babel/preset-env, babel-loader, sass, sass-loader, css-loader, style-loader, file-loader, resolve-url-loader
 var path = require('path');
 var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -136,6 +136,9 @@ module.exports = {
                         ? MiniCssExtractPlugin.loader
                         : 'style-loader',
                     'css-loader',
+                    {
+                        loader: 'resolve-url-loader',
+                    },
                     {
                       loader: 'sass-loader',
                       options: { implementation: require('sass') }
