@@ -93,10 +93,10 @@ module.exports = {
     plugins: isProduction ?
         commonPlugins.concat([
             new MiniCssExtractPlugin({ filename: 'style.[contenthash].css' }),
-            new CopyWebpackPlugin([{
+            new CopyWebpackPlugin({
                 patterns: [{
                     from: resolve(CONFIG.assetsDir) }]
-                }]),
+                })
         ])
         : commonPlugins.concat([
             new webpack.HotModuleReplacementPlugin(),
