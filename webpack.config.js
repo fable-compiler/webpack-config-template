@@ -26,8 +26,8 @@ var CONFIG = {
     devServerProxy: undefined,
 }
 
-// If we're running webpack-dev-server, assume we're in development
-var isProduction = !hasArg(/webpack-dev-server/);
+// If we're running webpack serve, assume we're in development
+var isProduction = !hasArg(/serve/);
 var outputWebpackStatsAsJson = hasArg('--json');
 
 if (!outputWebpackStatsAsJson) {
