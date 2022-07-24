@@ -83,9 +83,7 @@ module.exports = {
                     from: resolve(CONFIG.assetsDir) }]
                 })
         ])
-        : commonPlugins.concat([
-            new webpack.HotModuleReplacementPlugin(),
-        ]),
+        : commonPlugins,
     resolve: {
         // See https://github.com/fable-compiler/Fable/issues/1490
         symlinks: false
